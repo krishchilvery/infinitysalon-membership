@@ -6,15 +6,13 @@ const isDev = require('electron-is-dev');
 function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
     webPreferences: {
       nodeIntegration: true,
     },
   });
-  console.log(isDev)
   // and load the index.html of the app.
   // win.loadFile("index.html");
+  win.removeMenu()
   win.loadURL(
     isDev
       ? 'http://localhost:3000'
