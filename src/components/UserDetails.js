@@ -5,17 +5,13 @@ import {
     KeyboardDatePicker,
 } from '@material-ui/pickers'
 import { useEffect, useState } from "react"
-import firebase from "firebase/app"
-import "firebase/auth"
-import "firebase/firestore"
-import { DEFAULT_DISCOUNT, firebaseConfig, FIRESTORE_COLLECTION_CLIENTS } from "./config"
+import { DEFAULT_DISCOUNT, FIRESTORE_COLLECTION_CLIENTS } from "./config"
 import { useHistory } from "react-router"
 import EditIcon from '@material-ui/icons/Edit';
 
 
 const useStyles = makeStyles(theme => ({
     mainFlexBox: {
-        backgroundColor: '#121212',
         padding: "30px",
         display: 'flex',
         flexDirection: 'row',
@@ -35,7 +31,7 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'column',
         justifyContent: 'center',
         width: '50%',
-        paddingLeft:'30px'
+        paddingLeft: '30px'
     },
     authField: {
         margin: theme.spacing(1),
@@ -51,13 +47,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function UserDetails(props) {
 
-    if(!firebase.apps.length){
-        firebase.initializeApp(firebaseConfig)
-    }else{
-        firebase.app()
-    }
+    const firebase = window.firebase
     const firestore = firebase.firestore()
-    
+
     const history = useHistory()
 
     const { handleSuccess, handleError } = props
@@ -79,66 +71,71 @@ export default function UserDetails(props) {
     }
 
     const handleDiscount = (event, newDiscount) => {
-        if(edit){
+        if (edit) {
             setDiscount(newDiscount)
         }
-        
+
     }
 
     const handleIsMember = (event) => {
-        if(edit){
+        if (edit) {
             setIsMember(event.target.checked)
         }
-        
+
     }
 
     const handleGender = (event) => {
-        if(edit){
+        if (edit) {
             setGender(event.target.value);
         }
-        
+
     }
 
     const handleName = (event) => {
-        if(edit){
+        if (edit) {
             setName(event.target.value)
         }
     }
 
     const handleDob = (date) => {
-        if(edit){
-            setDob(date)      
+        if (edit) {
+            setDob(date)
         }
     }
 
     const [bill, setBill] = useState(0.0)
     const [discountAmt, setDiscountAmt] = useState(0.0)
 
+    const handleBill = (event) => {
+        setBill(event.target.value)
+        setDiscountAmt(0)
+    }
+
     const calculateBill = (event) => {
-        let damt = bill*discount/100
+        let damt = bill * discount / 100
         setDiscountAmt(damt)
     }
 
     const getFirestoreData = () => {
         const user = window.user
-        if(!user){
+        if (!user) {
             history.replace("/")
-        }else{
+        } else {
             let userRef = firestore.collection(FIRESTORE_COLLECTION_CLIENTS).doc(user.uid)
             userRef.get().then((doc) => {
-                if(doc.exists){
+                if (doc.exists) {
                     const userData = doc.data()
                     setName(userData.full_name)
-                    setDob(new Date(userData.dob.seconds*1000))
+                    setDob(new Date(userData.dob.seconds * 1000))
                     setGender(userData.gender)
                     setIsMember(userData.is_member)
                     setDiscount(userData.discount)
-                    setMembershipStartDate(new Date(userData.membership_start_date*1000))
-                    setMembershipRenewDate(new Date(userData.membership_renew_date*1000))
+                    setMembershipStartDate(new Date(userData.membership_start_date * 1000))
+                    setMembershipRenewDate(new Date(userData.membership_renew_date * 1000))
                 } else {
                     setNewuser(true)
                     setEdit(true)
-                } 
+                }
             })
         }
     }
@@ -196,23 +193,23 @@ export default function UserDetails(props) {
 
     return (
         <Paper className={classes.mainFlexBox}>
-            <form style={{width:"100%", paddingRight:"30px"}}>
+            <form style={{ width: "100%", paddingRight: "30px" }}>
                 <FormLabel>
-                    <div style={{display:"flex", flexDirection:"row"}}>
-                        <Typography variant="h6" style={{color: "white"}}>Client Details</Typography>
-                        <Button 
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                        <Typography variant="h6" style={{ color: "#121212" }}>Client Details</Typography>
+                        <Button
                             disabled={newUser}
                             classes={{ root: classes.authButton }}
                             color="secondary"
                             startIcon={<EditIcon fontSize="small" />}
-                            style={{ justifyContent:"flex-end" }}
+                            style={{ justifyContent: "flex-end" }}
                             onClick={handleEdit}
                         >
                             Edit
                         </Button>
                     </div>
                 </FormLabel>
-                <Divider/>
+                <Divider />
                 <div className={classes.detailsFlexBox}>
                     <TextField
                         required
@@ -246,19 +243,19 @@ export default function UserDetails(props) {
                     </FormControl>
                     <FormControlLabel
                         control={
-                        <Checkbox
-                            checked={isMember}
-                            onChange={handleIsMember}
-                            id="is-member"
-                            color="primary"
-                            readOnly={!edit}
-                        />
+                            <Checkbox
+                                checked={isMember}
+                                onChange={handleIsMember}
+                                id="is-member"
+                                color="primary"
+                                readOnly={!edit}
+                            />
                         }
                         label="Is Member?"
                     />
                     <FormControl className={classes.authField}>
                         <FormLabel>
-                            <Typography style={{color: "white"}}>Discount: {discount} % </Typography>
+                            <Typography style={{ color: "#121212" }}>Discount: {discount} % </Typography>
                             <Collapse in={edit}>
                                 <Slider
                                     onChange={handleDiscount}
@@ -273,58 +270,58 @@ export default function UserDetails(props) {
                         </FormLabel>
                     </FormControl>
                     {
-                        newUser?
-                        <Button classes={{ root: classes.authButton }} onClick={handleSubmit}><b>Submit</b></Button>:
-                        (
-                            <ButtonGroup>
-                                <Button disabled={!edit} classes={{ root: classes.authButton }} onClick={handleUpdate}><b>Update</b></Button>
-                                <Button disabled={!edit} classes={{ root: classes.authButton }} onClick={handleCancel}><b>Cancel</b></Button>
-                            </ButtonGroup>
-                        )
+                        newUser ?
+                            <Button classes={{ root: classes.authButton }} onClick={handleSubmit}><b>Submit</b></Button> :
+                            (
+                                <ButtonGroup>
+                                    <Button disabled={!edit} classes={{ root: classes.authButton }} onClick={handleUpdate}><b>Update</b></Button>
+                                    <Button disabled={!edit} classes={{ root: classes.authButton }} onClick={handleCancel}><b>Cancel</b></Button>
+                                </ButtonGroup>
+                            )
                     }
                 </div>
             </form>
             {
-                (!edit && !newUser)?
-                (
-                    <>
-                    <Divider orientation="vertical"/>
-                    <div className={classes.billFlexBox}>
-                        <TextField
-                            required
-                            id="bill"
-                            label="Bill Amount"
-                            className={classes.authField}
-                            value={bill}
-                            onChange={event=>{setBill(event.target.value)}}
-                        />
-                        <TextField
-                            readonly
-                            id="discount"
-                            label="Discount"
-                            className={classes.authField}
-                            value={discount}
-                        />
-                        <Button onClick={calculateBill}><b>Calculate Bill</b></Button>
-                        <Divider/>
-                        <Table>
-                            <TableRow>
-                                <TableCell>Total Bill</TableCell>
-                                <TableCell>{bill}</TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Discount : {discount} %</TableCell>
-                                <TableCell>{discountAmt}</TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Amount to be payed</TableCell>
-                                <TableCell>{bill-discountAmt}</TableCell>
-                            </TableRow>
-                        </Table>
-                    </div>
-                    </>
-                ):
-                (<></>)
+                (!edit && !newUser) ?
+                    (
+                        <>
+                            <Divider orientation="vertical" />
+                            <div className={classes.billFlexBox}>
+                                <TextField
+                                    required
+                                    id="bill"
+                                    label="Bill Amount"
+                                    className={classes.authField}
+                                    value={bill}
+                                    onChange={handleBill}
+                                />
+                                <TextField
+                                    readonly
+                                    id="discount"
+                                    label="Discount"
+                                    className={classes.authField}
+                                    value={discount}
+                                />
+                                <Button style={{ marginTop: '10px' }} color="primary" raised variant="contained" onClick={calculateBill}><b>Calculate Bill</b></Button>
+                                <Divider />
+                                <Table style={{ visibility: discountAmt ? '' : 'hidden' }}>
+                                    <TableRow>
+                                        <TableCell>Total Bill</TableCell>
+                                        <TableCell>{bill}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Discount : {discount} %</TableCell>
+                                        <TableCell>{discountAmt}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Amount to be payed</TableCell>
+                                        <TableCell>{bill - discountAmt}</TableCell>
+                                    </TableRow>
+                                </Table>
+                            </div>
+                        </>
+                    ) :
+                    (<></>)
             }
         </Paper>
     )

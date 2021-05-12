@@ -1,4 +1,4 @@
-import { AppBar, IconButton, makeStyles, Toolbar, Tooltip, Typography } from '@material-ui/core'
+import { AppBar, IconButton, makeStyles, Toolbar, Tooltip } from '@material-ui/core'
 import HomeIcon from '@material-ui/icons/Home';
 import { useHistory } from 'react-router-dom';
 

@@ -1,21 +1,27 @@
 import './App.css';
-import AddMember from './components/AddMember';
+import firebase from "firebase";
+import { firebaseConfig } from "./components/config";
 import TopBar from './components/TopBar';
-import HomePage from './components/HomePage';
 import { useState } from 'react';
-import VerifyMember from './components/VerifyMember';
 import { createMuiTheme, CssBaseline, Snackbar, ThemeProvider } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import { HashRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import UserDetails from './components/UserDetails';
+import FirebaseUI from './components/FirebaseUI';
 
 const theme = createMuiTheme({
   palette: {
-    type: 'dark',
+    type: 'light',
   },
 });
 
 function App() {
+  if(!firebase.apps.length){
+    firebase.initializeApp(firebaseConfig)
+  }else{
+      firebase.app()
+  }
+  window.firebase = firebase
   const [success, setSuccess] = useState(false)
   const [successMessage, setSuccessMessage] = useState("")
   const [error, setError] = useState(false)
@@ -25,8 +31,8 @@ function App() {
     setSuccessMessage(message)
     setSuccess(true)
   }
-
-  const handleClose = (message) => {
+  
+  const handleClose = () => {
     setSuccess(false)
     setSuccessMessage("")
     setError(false)
@@ -40,21 +46,16 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <div id="#firebaseui"></div>
       <div className="App">
         <Router>
           <TopBar />
           <Switch>
-              <Route path="/add">
-                  <AddMember handleSuccess={handleSuccess} handleError={handleError}/>
-              </Route>
               <Route path="/user">
                   <UserDetails handleSuccess={handleSuccess} handleError={handleError}/>
               </Route>
-              <Route path="/verify">
-                  <VerifyMember handleSuccess={handleSuccess} handleError={handleError}/>
-              </Route>
               <Route path="/">
-                  <HomePage />
+                <FirebaseUI handleSuccess={handleSuccess} handleError={handleError}/>
               </Route>
           </Switch>
         </Router>
