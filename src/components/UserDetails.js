@@ -4,7 +4,7 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { DEFAULT_DISCOUNT, FIRESTORE_COLLECTION_CLIENTS } from "./config"
 import { useHistory } from "react-router"
 import EditIcon from '@material-ui/icons/Edit';
@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
         justifyContent: 'center',
         height: '70vh',
-        width: '100vh'
+        maxWidth: '100vw'
 
     },
     detailsFlexBox: {
@@ -30,7 +30,6 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        width: '50%',
         paddingLeft: '30px'
     },
     authField: {
@@ -65,6 +64,11 @@ export default function UserDetails(props) {
     const [newUser, setNewuser] = useState(false)
     const [edit, setEdit] = useState(false)
 
+    useEffect(() => {
+        return function cleanup(){
+            window.user=null
+        }
+    }, [])
     const handleEdit = (event) => {
         setEdit(true)
 
@@ -140,9 +144,6 @@ export default function UserDetails(props) {
         }
     }
 
-    // useEffect(() => {
-    //     getFirestoreData()
-    // }, [getFirestoreData])
     getFirestoreData()
 
     const handleSubmit = () => {

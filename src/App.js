@@ -46,22 +46,18 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <div id="#firebaseui"></div>
       <div className="App">
         <Router>
           <TopBar />
           <Switch>
               <Route path="/user">
-                  <UserDetails handleSuccess={handleSuccess} handleError={handleError}/>
+                <UserDetails handleSuccess={handleSuccess} handleError={handleError}/>
               </Route>
               <Route path="/">
                 <FirebaseUI handleSuccess={handleSuccess} handleError={handleError}/>
               </Route>
           </Switch>
         </Router>
-        {/* {page === 'home' && (<HomePage setPage={setPage} />)}
-        {page === 'add' && (<AddMember handleSuccess={handleSuccess} handleError={handleError} />)}
-        {page === 'verify' && (<VerifyMember handleSuccess={handleSuccess} handleError={handleError} />)} */}
         <Snackbar open={success} autoHideDuration={5000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="success">
             {successMessage}
