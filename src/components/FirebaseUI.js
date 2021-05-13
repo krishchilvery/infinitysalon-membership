@@ -13,8 +13,7 @@ export default function FirebaseUI(props) {
                     size: 'invisible',
                     badge: 'bottomleft'
                 },
-                defaultCountry: 'IND',
-                loginHint: '+911234567890',
+                defaultCountry: 'IND'
             }
         ],
         signInSuccessUrl: '/user',
