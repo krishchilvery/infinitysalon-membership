@@ -4,7 +4,7 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers'
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { DEFAULT_DISCOUNT, FIRESTORE_COLLECTION_CLIENTS } from "./config"
 import { useHistory } from "react-router"
 import EditIcon from '@material-ui/icons/Edit';
@@ -140,9 +140,10 @@ export default function UserDetails(props) {
         }
     }
 
-    useEffect(() => {
-        getFirestoreData()
-    }, [])
+    // useEffect(() => {
+    //     getFirestoreData()
+    // }, [getFirestoreData])
+    getFirestoreData()
 
     const handleSubmit = () => {
         const user = window.user
