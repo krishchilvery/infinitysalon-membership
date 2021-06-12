@@ -8,6 +8,7 @@ import { Alert } from '@material-ui/lab';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import UserDetails from './components/UserDetails';
 import FirebaseUI from './components/FirebaseUI';
+import HomeScreenPassword from './components/HomeScreenPassword';
 
 const theme = createMuiTheme({
   palette: {
@@ -53,8 +54,11 @@ function App() {
               <Route path="/user">
                 <UserDetails handleSuccess={handleSuccess} handleError={handleError}/>
               </Route>
-              <Route path="/">
+              <Route path="/verify">
                 <FirebaseUI handleSuccess={handleSuccess} handleError={handleError}/>
+              </Route>
+              <Route path="/">
+                <HomeScreenPassword handleSuccess={handleSuccess} handleError={handleError}/>
               </Route>
           </Switch>
         </Router>

@@ -4,6 +4,9 @@ import { useHistory } from "react-router";
 export default function FirebaseUI(props) {
     const {handleSuccess ,handleError} = props
     const history = useHistory()
+    if(!window.salon){
+        history.push("/")
+    }
     const uiConfig = ({
         signInOptions: [
             {
