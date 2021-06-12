@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '70vh',
+        minHeight: '70vh',
         maxWidth: '100vw'
 
     },
@@ -45,11 +45,10 @@ const useStyles = makeStyles(theme => ({
 )
 
 export default function UserDetails(props) {
-
+    const history = useHistory()
     const firebase = window.firebase
     const firestore = firebase.firestore()
 
-    const history = useHistory()
 
     const { handleSuccess, handleError } = props
     const classes = useStyles()
@@ -65,6 +64,7 @@ export default function UserDetails(props) {
     const [edit, setEdit] = useState(false)
 
     useEffect(() => {
+        
         return function cleanup(){
             window.user=null
         }
@@ -122,8 +122,12 @@ export default function UserDetails(props) {
 
     const getFirestoreData = () => {
         const user = window.user
+        if(!window.salon){
+            history.push('/')
+            return
+        }
         if (!user) {
-            history.replace("/")
+            history.push("/verify")
         } else {
             let userRef = firestore.collection(FIRESTORE_COLLECTION_CLIENTS).doc(user.uid)
             userRef.get().then((doc) => {
@@ -145,7 +149,6 @@ export default function UserDetails(props) {
     }
 
     getFirestoreData()
-
     const handleSubmit = () => {
         const user = window.user
         firestore.collection(FIRESTORE_COLLECTION_CLIENTS).doc(user.uid).set({
