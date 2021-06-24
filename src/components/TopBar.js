@@ -1,6 +1,8 @@
+import React from "react";
 import { AppBar, IconButton, makeStyles, Toolbar, Tooltip } from '@material-ui/core'
 import HomeIcon from '@material-ui/icons/Home';
-import { useHistory } from 'react-router-dom';
+import { navigate } from '@reach/router';
+import { logout } from '../services/auth';
 
 const useStyles = makeStyles(theme => ({
     topbar: {
@@ -13,11 +15,10 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function TopBar(props) {
-    let history = useHistory()
     const classes = useStyles()
     const handleHome = (event) => {
-        history.push('/')
-        window.user = null
+        navigate('/')
+        logout()
     }
     return (
         <AppBar position="fixed" className={classes.topbar}>

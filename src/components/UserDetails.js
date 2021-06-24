@@ -1,3 +1,4 @@
+import React from "react"
 import { Button, ButtonGroup, Checkbox, Collapse, Divider, FormControl, FormControlLabel, FormLabel, makeStyles, Paper, Radio, RadioGroup, Slider, Table, TableCell, TableRow, TextField, Typography } from "@material-ui/core"
 import DateFnsUtils from '@date-io/date-fns'
 import {
@@ -6,8 +7,9 @@ import {
 } from '@material-ui/pickers'
 import { useEffect, useState } from "react"
 import { DEFAULT_DISCOUNT, FIRESTORE_COLLECTION_CLIENTS } from "./config"
-import { useHistory } from "react-router"
+import { navigate } from "@reach/router"
 import EditIcon from '@material-ui/icons/Edit';
+import { getUser, logout } from "../services/auth";
 
 
 const useStyles = makeStyles(theme => ({
@@ -47,9 +49,10 @@ const useStyles = makeStyles(theme => ({
 export default function UserDetails(props) {
 
     const firebase = window.firebase
+    if(firebase === undefined){
+        navigate('/')
+    }
     const firestore = firebase.firestore()
-
-    const history = useHistory()
 
     const { handleSuccess, handleError } = props
     const classes = useStyles()
@@ -66,7 +69,7 @@ export default function UserDetails(props) {
 
     useEffect(() => {
         return function cleanup(){
-            window.user=null
+            logout()
         }
     }, [])
     const handleEdit = (event) => {
@@ -120,10 +123,11 @@ export default function UserDetails(props) {
         setDiscountAmt(damt)
     }
 
+    const user = getUser()
+
     const getFirestoreData = () => {
-        const user = window.user
         if (!user) {
-            history.replace("/")
+            navigate('/')
         } else {
             let userRef = firestore.collection(FIRESTORE_COLLECTION_CLIENTS).doc(user.uid)
             userRef.get().then((doc) => {
@@ -147,7 +151,6 @@ export default function UserDetails(props) {
     getFirestoreData()
 
     const handleSubmit = () => {
-        const user = window.user
         firestore.collection(FIRESTORE_COLLECTION_CLIENTS).doc(user.uid).set({
             full_name: name,
             dob: dob,
@@ -168,7 +171,6 @@ export default function UserDetails(props) {
     }
 
     const handleUpdate = () => {
-        const user = window.user
         firestore.collection(FIRESTORE_COLLECTION_CLIENTS).doc(user.uid).update({
             full_name: name,
             dob: dob,
@@ -198,7 +200,7 @@ export default function UserDetails(props) {
             <form style={{ width: "100%", paddingRight: "30px" }}>
                 <FormLabel>
                     <div style={{ display: "flex", flexDirection: "row" }}>
-                        <Typography variant="h6" style={{ color: "#121212" }}>Client Details</Typography>
+                        <Typography variant="h6" style={{ fontWeight:"bold" }}>Client Details</Typography>
                         <Button
                             disabled={newUser}
                             classes={{ root: classes.authButton }}
