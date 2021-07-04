@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Button,
   ButtonGroup,
@@ -24,6 +24,7 @@ import { DEFAULT_DISCOUNT, FIRESTORE_COLLECTION_CLIENTS } from "./config";
 import { navigate } from "@reach/router";
 import EditIcon from "@material-ui/icons/Edit";
 import { useAlert } from "react-alert";
+import { AuthContext } from "./AuthModal";
 
 const useStyles = makeStyles((theme) => ({
   mainFlexBox: {
@@ -60,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
 export default function UserDetails(props) {
 
   const alert = useAlert()
+  const authContext = useContext(AuthContext)
 
   const firebase = window.firebase
   if (firebase === undefined) {
@@ -167,6 +169,8 @@ export default function UserDetails(props) {
       })
       .catch((error) => {
         console.log(error);
+        alert.error("This must be an authentication Error. Please login again and check or try again later");
+        authContext.logout();
       });
   };
 
@@ -402,7 +406,7 @@ export default function UserDetails(props) {
             <Divider />
             <table style={{ visibility: discountAmt ? "" : "hidden" }}>
               <tr>
-                <td>Total Bill</td>
+                <td>Total Bill:</td>
                 <td>{bill}</td>
               </tr>
               <tr>
@@ -410,7 +414,7 @@ export default function UserDetails(props) {
                 <td>{discountAmt}</td>
               </tr>
               <tr>
-                <td>Amount to be payed</td>
+                <td>Amount to be paied:</td>
                 <td>{bill - discountAmt}</td>
               </tr>
             </table>
