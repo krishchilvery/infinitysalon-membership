@@ -10,3 +10,5 @@ export const firebaseConfig = {
 export const FIRESTORE_COLLECTION_CLIENTS = "clients"
 
 export const DEFAULT_DISCOUNT = 15
+
+export const USERS_PAGINATION_LIMIT = 15
