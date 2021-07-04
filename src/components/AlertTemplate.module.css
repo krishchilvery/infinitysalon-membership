@@ -1,0 +1,16 @@
+.alert{
+    @apply rounded-md max-w-sm px-8 py-2 z-50;
+}
+
+.infoAlert{
+    @apply bg-blue-300 text-blue-800;
+}
+.successAlert{
+    @apply bg-green-300 text-green-800;
+}
+.errorAlert{
+    @apply bg-red-300 text-red-800;
+}
+.closeButton{
+    @apply absolute top-0 right-2 cursor-pointer
+}

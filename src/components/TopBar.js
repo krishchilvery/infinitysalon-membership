@@ -1,33 +1,30 @@
-import { AppBar, IconButton, makeStyles, Toolbar, Tooltip } from '@material-ui/core'
+import React, { useContext } from "react";
 import HomeIcon from '@material-ui/icons/Home';
-import { useHistory } from 'react-router-dom';
-
-const useStyles = makeStyles(theme => ({
-    topbar: {
-        alignItems:'center',
-        justifyContent: 'center'
-    },
-    margin: {
-        margin: theme.spacing(1)
-    }
-}))
+import { AuthContext } from "./AuthModal";
+import { navigate } from "@reach/router";
 
 export default function TopBar(props) {
-    let history = useHistory()
-    const classes = useStyles()
-    const handleHome = (event) => {
-        history.push('/')
-        window.user = null
+    const authContext = useContext(AuthContext)
+    const handleHome = () => {
+        navigate("/")
+    }
+    const handleLogout = () => {
+        navigate("/")
+        authContext.logout()
     }
     return (
-        <AppBar position="fixed" className={classes.topbar}>
-            <Toolbar>
-                <Tooltip title="Home">
-                    <IconButton onClick={handleHome} className={classes.margin}>
-                        <HomeIcon fontSize="large" />
-                    </IconButton>
-                </Tooltip>
-            </Toolbar>
-        </AppBar>
+        <div className="fixed container flex top-0 h-10 border-b border-current items-center divide-x-2 divide-current divide-solid w-full">
+            <div id="title" className="flex font-semibold p-2">Infinity Salons</div>
+            <div id="navigation" className="flex flex-grow justify-center font-semibold">
+                <div className="flex items-center cursor-pointer transition-transform transform hover:-translate-y-1 hover:scale-110" onClick={handleHome}>
+                    <HomeIcon fontSize="small"/>Home
+                </div>
+            </div>
+            <div id="profile" className="flex font-semibold cursor-pointer p-2">
+                <div className="flex items-center transition-transform transform hover:-translate-y-1 hover:scale-110" onClick={handleLogout}>
+                    Logout
+                </div>
+            </div>
+        </div>
     )
 }

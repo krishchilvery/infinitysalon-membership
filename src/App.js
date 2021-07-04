@@ -1,79 +1,118 @@
-import './App.css';
-import firebase from "firebase";
-import { firebaseConfig } from "./components/config";
-import TopBar from './components/TopBar';
-import { useState } from 'react';
-import { createMuiTheme, CssBaseline, Snackbar, ThemeProvider } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import UserDetails from './components/UserDetails';
-import FirebaseUI from './components/FirebaseUI';
-import HomeScreenPassword from './components/HomeScreenPassword';
-
-const theme = createMuiTheme({
-  palette: {
-    type: 'light',
-  },
-});
+import React, { useState, useContext } from "react";
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
+import {
+  firebaseConfig,
+  FIRESTORE_COLLECTION_CLIENTS,
+} from "./components/config";
+import { Router, navigate } from "@reach/router";
+import { useAlert } from "react-alert";
+import Search from "./components/Search";
+import Modal from "./components/Modal";
+import UserDetails from "./components/UserDetails";
+import TopBar from "./components/TopBar";
+import { AuthContext } from "./components/AuthModal";
 
 function App() {
-  if(!firebase.apps.length){
-    firebase.initializeApp(firebaseConfig)
-  }else{
-      firebase.app()
-  }
-  window.firebase = firebase
-  const [success, setSuccess] = useState(false)
-  const [successMessage, setSuccessMessage] = useState("")
-  const [error, setError] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
+  const [uid, setUid] = useState("");
+  const [addDialogModal, setAddDialogModal] = useState(false);
+  const [newUser, setNewUser] = useState(false);
+  const [phone, setPhone] = useState("");
+  const alert = useAlert();
 
-  const handleSuccess = (message) => {
-    setSuccessMessage(message)
-    setSuccess(true)
-  }
-  
-  const handleClose = () => {
-    setSuccess(false)
-    setSuccessMessage("")
-    setError(false)
-    setErrorMessage("")
+  //firebase init
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  } else {
+    firebase.app();
   }
 
-  const handleError = (message) => {
-    setErrorMessage(message)
-    setError(true)
-  }
+  window.firebase = firebase;
+
+  const auth = useContext(AuthContext);
+
+  const setUserFromPhone = (phone) => {
+    const firestore = firebase.firestore();
+    setPhone(phone);
+    var clientsRef = firestore.collection(FIRESTORE_COLLECTION_CLIENTS);
+    clientsRef
+      .where("phone", "==", phone)
+      .get()
+      .then((querySnapshot) => {
+        if (querySnapshot.empty) {
+          console.log("empty");
+          setAddDialogModal(true);
+          return;
+        }
+        const user = querySnapshot.docs[0];
+        setNewUser(false);
+        setUid(user.id);
+        navigate("/user");
+      })
+      .catch((error) => {
+        alert.error("Error getting user from phone: " + error);
+        auth.logout();
+      });
+  };
+
+  const handleAddNewClient = () => {
+    setNewUser(true);
+    setAddDialogModal(false);
+    navigate("/user");
+  };
+
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <div className="App">
-        <Router>
-          <TopBar />
-          <Switch>
-              <Route path="/user">
-                <UserDetails handleSuccess={handleSuccess} handleError={handleError}/>
-              </Route>
-              <Route path="/verify">
-                <FirebaseUI handleSuccess={handleSuccess} handleError={handleError}/>
-              </Route>
-              <Route path="/">
-                <HomeScreenPassword handleSuccess={handleSuccess} handleError={handleError}/>
-              </Route>
-          </Switch>
-        </Router>
-        <Snackbar open={success} autoHideDuration={5000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="success">
-            {successMessage}
-          </Alert>
-        </Snackbar>
-        <Snackbar open={error} autoHideDuration={20000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="error">
-            {errorMessage}
-          </Alert>
-        </Snackbar>
-      </div>
-    </ThemeProvider>
+    <div className="h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 flex justify-center align-center items-center">
+      <TopBar />
+      <Router>
+        {/* <Users path="/" /> */}
+        <Search path="/" setUserFromPhone={setUserFromPhone} />
+        <UserDetails
+          path="/user"
+          uid={uid}
+          setUid={setUid}
+          newUser={newUser}
+          setNewUser={setNewUser}
+          phone={phone}
+          setPhone={setPhone}
+        />
+      </Router>
+
+      <Modal
+        open={addDialogModal}
+        closable={false}
+        handleClose={() => {
+          setAddDialogModal(false);
+        }}
+      >
+        <div>
+          <div className="font-semibold">
+            Looks like the user you're trying to search doesn't exist in the
+            database. Do you want to add a new user?
+          </div>
+          <br />
+          <div className="flex space-x-2">
+            <button
+              onClick={() => {
+                handleAddNewClient();
+              }}
+              className="bg-green-500 hover:bg-green-200 py-1 font-semibold shadow rounded-md w-full text-center"
+            >
+              Yes
+            </button>
+            <button
+              onClick={() => {
+                setAddDialogModal(false);
+              }}
+              className="bg-red-500 hover:bg-red-200 font-semibold shadow rounded-md w-full text-center"
+            >
+              No
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </div>
   );
 }
 
