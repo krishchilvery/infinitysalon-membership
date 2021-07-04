@@ -61,7 +61,7 @@ export default function UserDetails(props) {
 
   const alert = useAlert()
 
-  const firebase = window.firebase;
+  const firebase = window.firebase
   if (firebase === undefined) {
     navigate("/");
   }
@@ -70,10 +70,12 @@ export default function UserDetails(props) {
   const {uid, setUid} = props;
   const {phone, setPhone} = props;
   const {newUser, setNewUser} = props;
-
-  if(uid === "" && phone === "" && !newUser){
-    window.location.pathname="/"
-  }
+  
+  useEffect(() => {
+    if(uid === "" && phone === "" && !newUser){
+      window.location.pathname="/"
+    }
+  }, [uid, phone, newUser])
 
   const classes = useStyles();
   const [name, setName] = useState("");

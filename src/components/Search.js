@@ -7,6 +7,7 @@ export default function Search(props) {
   const auth = useContext(AuthContext);
   const firebase = window.firebase;
 
+
   firebase.auth().onAuthStateChanged((user) => {
     if (!user) {
       auth.logout();
