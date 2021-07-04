@@ -9,6 +9,7 @@ export default function TopBar(props) {
         navigate("/")
     }
     const handleLogout = () => {
+        navigate("/")
         authContext.logout()
     }
     return (
