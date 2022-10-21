@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
 import HomeIcon from '@material-ui/icons/Home';
 import { AuthContext } from "./AuthModal";
-import { navigate } from "@reach/router";
+import { useNavigate } from "react-router-dom";
 
 export default function TopBar(props) {
     const authContext = useContext(AuthContext)
+    const navigate = useNavigate()
     const handleHome = () => {
         navigate("/")
     }

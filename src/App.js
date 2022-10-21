@@ -6,13 +6,13 @@ import {
   firebaseConfig,
   FIRESTORE_COLLECTION_CLIENTS,
 } from "./components/config";
-import { Router, navigate } from "@reach/router";
 import { useAlert } from "react-alert";
 import Search from "./components/Search";
 import Modal from "./components/Modal";
 import UserDetails from "./components/UserDetails";
 import TopBar from "./components/TopBar";
 import { AuthContext } from "./components/AuthModal";
+import { Route, Routes, useNavigate } from "react-router-dom";
 
 function App() {
   const [uid, setUid] = useState("");
@@ -20,7 +20,7 @@ function App() {
   const [newUser, setNewUser] = useState(false);
   const [phone, setPhone] = useState("");
   const alert = useAlert();
-
+  const navigate = useNavigate()
   //firebase init
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -63,56 +63,59 @@ function App() {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 flex justify-center align-center items-center">
-      <TopBar />
-      <Router>
+      <div className="h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 flex justify-center align-center items-center">
+        <TopBar />
         {/* <Users path="/" /> */}
-        <Search path="/" setUserFromPhone={setUserFromPhone} />
-        <UserDetails
-          path="/user"
-          uid={uid}
-          setUid={setUid}
-          newUser={newUser}
-          setNewUser={setNewUser}
-          phone={phone}
-          setPhone={setPhone}
-        />
-      </Router>
-
-      <Modal
-        open={addDialogModal}
-        closable={false}
-        handleClose={() => {
-          setAddDialogModal(false);
-        }}
-      >
-        <div>
-          <div className="font-semibold">
-            Looks like the user you're trying to search doesn't exist in the
-            database. Do you want to add a new user?
+        <Routes>
+          <Route path="/" element={(
+            <Search path="/" setUserFromPhone={setUserFromPhone} />
+          )} />
+          <Route path="/user" element={(
+            <UserDetails
+              path="/user"
+              uid={uid}
+              setUid={setUid}
+              newUser={newUser}
+              setNewUser={setNewUser}
+              phone={phone}
+              setPhone={setPhone}
+            />
+          )} />
+        </Routes>
+        <Modal
+          open={addDialogModal}
+          closable={false}
+          handleClose={() => {
+            setAddDialogModal(false);
+          }}
+        >
+          <div>
+            <div className="font-semibold">
+              Looks like the user you're trying to search doesn't exist in the
+              database. Do you want to add a new user?
+            </div>
+            <br />
+            <div className="flex space-x-2">
+              <button
+                onClick={() => {
+                  handleAddNewClient();
+                }}
+                className="bg-green-500 hover:bg-green-200 py-1 font-semibold shadow rounded-md w-full text-center"
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => {
+                  setAddDialogModal(false);
+                }}
+                className="bg-red-500 hover:bg-red-200 font-semibold shadow rounded-md w-full text-center"
+              >
+                No
+              </button>
+            </div>
           </div>
-          <br />
-          <div className="flex space-x-2">
-            <button
-              onClick={() => {
-                handleAddNewClient();
-              }}
-              className="bg-green-500 hover:bg-green-200 py-1 font-semibold shadow rounded-md w-full text-center"
-            >
-              Yes
-            </button>
-            <button
-              onClick={() => {
-                setAddDialogModal(false);
-              }}
-              className="bg-red-500 hover:bg-red-200 font-semibold shadow rounded-md w-full text-center"
-            >
-              No
-            </button>
-          </div>
-        </div>
-      </Modal>
-    </div>
+        </Modal>
+      </div>
   );
 }
 

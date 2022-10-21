@@ -21,10 +21,10 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import { DEFAULT_DISCOUNT, FIRESTORE_COLLECTION_CLIENTS } from "./config";
-import { navigate } from "@reach/router";
 import EditIcon from "@material-ui/icons/Edit";
 import { useAlert } from "react-alert";
 import { AuthContext } from "./AuthModal";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   mainFlexBox: {
@@ -62,6 +62,7 @@ export default function UserDetails(props) {
 
   const alert = useAlert()
   const authContext = useContext(AuthContext)
+  const navigate = useNavigate()
 
   const firebase = window.firebase
   if (firebase === undefined) {

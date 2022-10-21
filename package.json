@@ -17,7 +17,6 @@
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/pickers": "^3.3.10",
-    "@reach/router": "^1.3.4",
     "autoprefixer": "^9.8.6",
     "date-fns": "^2.22.1",
     "firebase": "^8.5.0",
@@ -40,5 +39,8 @@
       "last 1 safari version"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "react-phone-input-2": "^2.15.1",
+    "react-router-dom": "^6.4.2"
+  }
 }

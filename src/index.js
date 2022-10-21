@@ -5,6 +5,7 @@ import App from "./App";
 import { Provider as AlertProvider, positions, transitions } from "react-alert";
 import AlertTemplate from "./components/AlertTemplate";
 import AuthProvider from "./components/AuthModal";
+import { BrowserRouter } from "react-router-dom";
 
 const alertOptions = {
   position: positions.TOP_RIGHT,
@@ -16,11 +17,13 @@ const alertOptions = {
 
 ReactDOM.render(
   <React.StrictMode>
-    <AlertProvider template={AlertTemplate} {...alertOptions}>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </AlertProvider>
+    <BrowserRouter>
+      <AlertProvider template={AlertTemplate} {...alertOptions}>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </AlertProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
 );
